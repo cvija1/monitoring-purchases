@@ -4,7 +4,7 @@ const colors = require("colors");
 const dotenv = require("dotenv").config();
 const { errorHandler } = require("./middleware/errorMiddleware");
 const { connectDB } = require("./config/db");
-var serveStatic = require("serve-static");
+
 const PORT = process.env.PORT || 8000;
 connectDB();
 const app = express();
@@ -16,7 +16,11 @@ app.use(express.urlencoded({ extended: false }));
 
 //serve frontend, pomjereno na vrh jer ako se spusti ispod api poziva ne radi
 if (process.env.NODE_ENV === "production") {
-  app.use(serveStatic(path.join(__dirname, "../frontend/build")));
+  app.use(
+    express.static(path.join(__dirname, "../frontend/build"), {
+      dotfiles: "allow",
+    })
+  );
   app.get("*", (req, res) => {
     res.sendFile(__dirname, "../", "frontend", "build", "index.html");
   });
