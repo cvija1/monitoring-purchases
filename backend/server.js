@@ -4,7 +4,6 @@ const colors = require("colors");
 const dotenv = require("dotenv").config();
 const { errorHandler } = require("./middleware/errorMiddleware");
 const { connectDB } = require("./config/db");
-var cors = require("cors");
 
 const PORT = process.env.PORT || 8000;
 connectDB();
@@ -13,8 +12,7 @@ const app = express();
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
-//zbog problema sa proxy serverom ovo se mora ubaciti da bi moglo da se salje zahtjev na drugi port
-app.use(cors());
+
 //serve frontend, pomjereno na vrh jer ako se spusti ispod api poziva ne radi
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/build")));
