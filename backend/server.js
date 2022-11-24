@@ -4,11 +4,11 @@ const colors = require("colors");
 const dotenv = require("dotenv").config();
 const { errorHandler } = require("./middleware/errorMiddleware");
 const { connectDB } = require("./config/db");
-
+const cors = require("cors");
 const PORT = process.env.PORT || 8000;
 connectDB();
 const app = express();
-
+app.use(cors());
 //ocekuje se json kao body request i ocekuje se da je url zahtjev
 app.use(express.json());
 
