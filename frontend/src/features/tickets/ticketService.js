@@ -19,13 +19,7 @@ const getTickets = async (token) => {
     },
   };
 
-  const response = await fetch(API_URL, {
-    method: "get",
-    headers: new Headers({
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    }),
-  });
+  const response = await axios.get(API_URL, config);
   return response.data;
 };
 
