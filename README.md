@@ -9,4 +9,4 @@ MONGO_URI=mongodb+srv://<your_username>:<your_password>@<your_cluster>/<your_db_
 JWT_SECRET=<your_secret>
 (jwt secret is important for your token)
 
-After you set .env you need to run npm install in root of your app and in frontend folder and then go back in your root and "npm run dev" which will give server for your backend and frontend concurently
+After you set .env you need to run npm install in frontend folder and then go back in your root and "npm run dev" which will give server for your backend and frontend concurently
