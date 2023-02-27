@@ -5,13 +5,13 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
+  const { name, surname, username, password } = req.body;
+  if (!name || !surname || !username || !password) {
     res.status(400);
     throw new Error("Please include all fields");
   }
 
-  const userExists = await User.findOne({ email });
+  const userExists = await User.findOne({ username });
   if (userExists) {
     res.status(400);
     throw new Error("User already exists");
@@ -22,7 +22,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const user = await User.create({
     name,
-    email,
+    surname,
+    username,
     password: hashedPassword,
   });
 
@@ -30,7 +31,8 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(201).json({
       _id: user._id,
       name: user.name,
-      email: user.email,
+      surname: user.surname,
+      username: user.username,
       token: generateToken(user._id),
     });
   } else {
@@ -42,13 +44,13 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
   if (user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({
       _id: user._id,
       name: user.name,
-      email: user.email,
+      username: user.username,
       token: generateToken(user._id),
     });
   } else {
@@ -61,7 +63,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const getMe = asyncHandler(async (req, res) => {
   const user = {
     id: req.user._id,
-    email: req.user.email,
+    username: req.user.username,
     name: req.user.name,
   };
 

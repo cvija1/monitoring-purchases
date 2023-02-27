@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import App from "./App";
+import Popper from "@popperjs/core";
+import "bootstrap/dist/js/bootstrap.bundle.min";
 import "./index.css";
 
 const container = document.getElementById("root");

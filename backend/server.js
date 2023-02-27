@@ -20,11 +20,11 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "hello" });
+  res.status(200).json({ message: "cao" });
 });
 
 app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/tickets", require("./routes/ticketRoutes"));
+app.use("/api/purchase", require("./routes/purchaseRoutes"));
 
 app.use(errorHandler);
 

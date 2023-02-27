@@ -6,20 +6,20 @@ const noteSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
-    ticket: {
+    purchase: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "Ticket",
+      ref: "Purchase",
     },
     text: {
       type: String,
-      required: [true, "Please add some text"],
+      required: [true, "Молим Вас оставите неки коментар"],
     },
-    isStaff: {
+    isAdmin: {
       type: Boolean,
       default: false,
     },
-    staffId: {
+    adminId: {
       type: String,
     },
   },

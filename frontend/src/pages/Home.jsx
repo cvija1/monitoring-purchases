@@ -1,23 +1,24 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { FaQuestionCircle, FaTicketAlt } from "react-icons/fa";
 
 const Home = () => {
   return (
     <>
-      <section className="heading">
-        <h1>What do you need help with?</h1>
-        <p> Please choose from an option below</p>
-      </section>
-
-      <Link to="/new-ticket" className="btn btn-reverse btn-block">
-        <FaQuestionCircle />
-        Create New Ticket
-      </Link>
-      <Link to="/tickets" className="btn btn-block">
-        <FaTicketAlt />
-        View My Tickets
-      </Link>
+      <div class="flex-grow-1 bg-primary d-flex justify-content-center align-items-center row m-0">
+        <div className="bg-opacity-50 bg-success text-light col-11 col-sm-8 col-lg-5 hero rounded text-center border border-2 border-dark">
+          <p className="mt-4 mb-5">
+            Ова апликација омогућава уношење нових набавки, као и увид у
+            реализоване, отказане и планиране набавке. На тај начин олакшава рад
+            лицима која учествују у планирању и вођењу набавки.
+          </p>
+          <div className="pt-5 text-light">
+            <img
+              class="img-fluid opacity-75 ms-auto me-auto w-50"
+              src="/img/grb.svg"
+              alt=""
+            ></img>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
