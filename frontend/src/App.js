@@ -8,9 +8,9 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Header from "./components/Header";
-import NewTicket from "./pages/NewTicket";
+import NewPurchase from "./pages/NewPurchase";
 import PrivateRoute from "./components/PrivateRoute";
-import Tickets from "./pages/Tickets";
+import Purchases from "./pages/Purchases";
 import Ticket from "./pages/Ticket";
 const App = () => {
   return (
@@ -22,14 +22,14 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/new-ticket" element={<PrivateRoute />}>
-              <Route path="/new-ticket" element={<NewTicket />} />
+            <Route path="/new-purchase" element={<PrivateRoute />}>
+              <Route path="/new-purchase" element={<NewPurchase />} />
             </Route>
-            <Route path="/tickets" element={<PrivateRoute />}>
-              <Route path="/tickets" element={<Tickets />} />
+            <Route path="/purchases" element={<PrivateRoute />}>
+              <Route path="/purchases" element={<Purchases />} />
             </Route>
-            <Route path="/ticket/:ticketId" element={<PrivateRoute />}>
-              <Route path="/ticket/:ticketId" element={<Ticket />} />
+            <Route path="/purchase/:purchaseId" element={<PrivateRoute />}>
+              <Route path="/purchase/:purchaseId" element={<Ticket />} />
             </Route>
           </Routes>
         </Router>

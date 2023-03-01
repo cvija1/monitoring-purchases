@@ -20,6 +20,14 @@ const purchaseSchema = mongoose.Schema(
       enum: ["у току", "завршена", "неуспјела"],
       default: "у току",
     },
+    value: {
+      type: Number,
+      required: true,
+    },
+    date: {
+      type: String,
+      required: [true, "Молим Вас унесите датум"],
+    },
   },
   { timestamps: true }
 );

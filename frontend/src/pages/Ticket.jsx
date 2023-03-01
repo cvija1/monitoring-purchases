@@ -4,7 +4,10 @@ import { toast } from "react-toastify";
 import { FaPlus } from "react-icons/fa";
 import Modal from "react-modal";
 import { useSelector, useDispatch } from "react-redux";
-import { getTicket, closeTicket } from "../features/tickets/ticketSlice";
+import {
+  getPurchase,
+  closePurchase,
+} from "../features/purchases/purchaseSlice";
 import {
   getNotes,
   createNote,
@@ -41,7 +44,7 @@ const Ticket = () => {
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { ticketId } = useParams();
+  const { purchaseId } = useParams();
 
   useEffect(() => {
     if (isError) {
@@ -57,13 +60,13 @@ const Ticket = () => {
       });
     }
 
-    dispatch(getTicket(ticketId));
-    dispatch(getNotes(ticketId));
+    dispatch(getPurchase(purchaseId));
+    dispatch(getNotes(purchaseId));
 
     //eslint-disable-next-line
   }, [isError, message, ticketId]);
   const onTicketClose = () => {
-    dispatch(closeTicket(ticketId));
+    dispatch(closePurchase(purchaseId));
     toast.success("Ticket closed", {
       position: "top-right",
       autoClose: 2000,
@@ -79,7 +82,7 @@ const Ticket = () => {
 
   const onNoteSubmit = (e) => {
     e.preventDefault();
-    dispatch(createNote({ noteText, ticketId }));
+    dispatch(createNote({ noteText, purchaseId }));
     closeModal();
     setNoteText("");
   };

@@ -1,15 +1,34 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const Purchase = require("../models/purchaseModel");
+const mongoose = require("mongoose");
 
 const getPurchases = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
+
   if (!user) {
     res.status(401);
     throw new Error("Корисник није пронађен");
   }
-  const purchases = await Purchases.find({ user: req.user.id });
-  res.status(200).json(purchases);
+
+  const { sort, pageSize, page, order } = req.query;
+
+  const count = await Purchase.countDocuments({ user: req.user.id });
+  const total = await Purchase.aggregate([
+    { $match: { user: mongoose.Types.ObjectId(req.user.id) } },
+    { $group: { _id: null, total: { $sum: "$value" } } },
+  ]);
+  const prices = total[0].total;
+  const purchases = await Purchase.find({ user: req.user.id })
+    .sort({ [sort]: order })
+    .skip((page - 1) * pageSize)
+    .limit(pageSize);
+
+  res.status(200).json({
+    purchases,
+    count,
+    total: prices,
+  });
 });
 
 const getAllPurchases = asyncHandler(async (req, res) => {
@@ -41,8 +60,8 @@ const getPurchase = asyncHandler(async (req, res) => {
 });
 
 const createPurchase = asyncHandler(async (req, res) => {
-  const { title, description } = req.body;
-  if (!title || !description) {
+  const { date, title, status, description, value } = req.body;
+  if (!title || !description || !status || !value || !date) {
     res.status(400);
     throw new Error("Молим Вас унесите назив набавке и опис исте");
   }
@@ -55,7 +74,9 @@ const createPurchase = asyncHandler(async (req, res) => {
     title,
     description,
     user: req.user.id,
-    status: "у току",
+    status,
+    value,
+    date,
   });
   res.status(201).json(purchase);
 });

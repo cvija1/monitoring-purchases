@@ -2,9 +2,13 @@ import React from "react";
 
 export const Spinner = () => {
   return (
-    <div className="loadingSpinnerContainer">
-      <div className="loadingSpinner"></div>
-    </div>
+    <>
+      <div class="preloader-wrapper">
+        <div class="spinner-border text-dark spinner">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </>
   );
 };
 
