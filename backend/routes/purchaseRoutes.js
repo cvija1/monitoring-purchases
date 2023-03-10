@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { protect, adminProtect } = require("../middleware/authMiddleware");
-const noteRouter = require("./noteRoutes");
 const {
   getPurchases,
   createPurchase,
@@ -10,7 +9,6 @@ const {
   updatePurchase,
   getAllPurchases,
 } = require("../controllers/purchaseController");
-router.use("/:purchaseId/notes", noteRouter);
 router.route("/").get(protect, getPurchases).post(protect, createPurchase);
 router.route("/admin").get(adminProtect, getAllPurchases);
 router

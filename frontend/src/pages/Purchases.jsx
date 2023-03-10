@@ -3,9 +3,8 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getPurchases, reset } from "../features/purchases/purchaseSlice";
 import Spinner from "../components/Spinner";
-import PurchaseItem from "../components/PurchaseItem";
-import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
+import Table from "../components/Table";
 
 const Purchases = () => {
   const { purchases, isLoading, isSuccess, additional } = useSelector(
@@ -20,13 +19,6 @@ const Purchases = () => {
     order: "asc",
   });
 
-  const handlePageChange = (e) => {
-    setParams((prev) => ({
-      ...prev,
-      page: e.selected + 1,
-    }));
-  };
-
   const sortClick = (e) => {
     const sort = e.target.name;
     const { order } = params;
@@ -35,6 +27,13 @@ const Purchases = () => {
       sort,
       page: 1,
       order: prev.sort === sort && order === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  const handlePageChange = (e) => {
+    setParams((prev) => ({
+      ...prev,
+      page: e.selected + 1,
     }));
   };
 
@@ -58,7 +57,7 @@ const Purchases = () => {
   }
   return (
     <>
-      {purchases.length === 0 ? (
+      {purchases?.length === 0 ? (
         <>
           <div class="flex-grow-1 bg-primary d-flex justify-content-center align-items-center row m-0">
             <div className="bg-opacity-50 bg-success text-light col-11 col-sm-8 col-lg-5 hero rounded text-center border border-2 border-dark">
@@ -80,102 +79,14 @@ const Purchases = () => {
           </div>
         </>
       ) : (
-        <>
-          <div class="flex-grow-1 bg-primary ">
-            <div class="container  text-light mt-5">
-              <div className="container d-flex align-items-center p-0">
-                <div className="h5 mb-4 ">Списак набавки које ви водите:</div>
-                <div
-                  class="btn-group ms-auto mb-4 flex-wrap "
-                  role="group"
-                  aria-label="Basic example"
-                >
-                  <button
-                    name="title"
-                    type="button"
-                    class="btn btn-secondary border"
-                    onClick={sortClick}
-                  >
-                    Сортирај по називу
-                  </button>
-                  <button
-                    name="date"
-                    type="button"
-                    class="btn btn-secondary border"
-                    onClick={sortClick}
-                  >
-                    Сортирај по датуму
-                  </button>
-                  <button
-                    name="status"
-                    type="button"
-                    class="btn btn-secondary border"
-                    onClick={sortClick}
-                  >
-                    Сортирај по статусу
-                  </button>
-                  <button
-                    name="value"
-                    type="button"
-                    class="btn btn-secondary border"
-                    onClick={sortClick}
-                  >
-                    Сортирај по вриједности
-                  </button>
-                </div>
-              </div>
-
-              <div className="table-responsive">
-                <table class="table table-hover mb-0">
-                  <thead>
-                    <tr className="table-primary">
-                      <th scope="col">Назив набавке</th>
-                      <th scope="col">Статус</th>
-                      <th scope="col">Датум</th>
-                      <th scope="col">Вриједност</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {purchases.map((purchase) => (
-                      <PurchaseItem key={purchase._id} purchase={purchase} />
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr className="table-secondary">
-                      <td scope="row"></td>
-                      <td></td>
-                      <td className="text-end">Укупна вриједност набавки:</td>
-                      <td>{`${total} RSD`}</td>
-                    </tr>
-                  </tfoot>
-                </table>
-                <div className="d-flex justify-content-center align-items-end background">
-                  <ReactPaginate
-                    nextLabel="следећа >"
-                    pageCount={pageCount}
-                    pageRangeDisplayed={3}
-                    marginPagesDisplayed={2}
-                    previousLabel="< претходна"
-                    pageClassName="page-item"
-                    pageLinkClassName="page-link"
-                    previousClassName="page-item"
-                    previousLinkClassName="page-link"
-                    nextClassName="page-item"
-                    nextLinkClassName="page-link"
-                    breakLabel="..."
-                    breakClassName="page-item"
-                    breakLinkClassName="page-link"
-                    containerClassName="pagination mb-2 mt-2"
-                    activeClassName="active"
-                    onPageChange={handlePageChange}
-                    forcePage={params.page - 1}
-                    renderOnZeroPageCount={null}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
+        <Table
+          total={total}
+          pageCount={pageCount}
+          sortClick={sortClick}
+          handlePageChange={handlePageChange}
+          purchases={purchases}
+          params={params}
+        />
       )}
     </>
   );

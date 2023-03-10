@@ -17,13 +17,13 @@ const protect = asyncHandler(async (req, res, next) => {
       next();
     } catch (error) {
       res.status(401);
-      throw new Error("Not authorized");
+      throw new Error("Нисте ауторизовани");
     }
   }
 
   if (!token) {
     res.status(401);
-    throw new Error("Not authorized");
+    throw new Error("Нисте ауторизовани");
   }
 });
 
@@ -43,17 +43,17 @@ const adminProtect = asyncHandler(async (req, res, next) => {
         next();
       } else {
         res.status(401);
-        throw new Error("Not authorized");
+        throw new Error("Нисте ауторизовани");
       }
     } catch (error) {
       res.status(401);
-      throw new Error("Not authorized");
+      throw new Error("Нисте ауторизовани");
     }
   }
 
   if (!token) {
     res.status(401);
-    throw new Error("Not authorized");
+    throw new Error("Нисте ауторизовани");
   }
 });
 

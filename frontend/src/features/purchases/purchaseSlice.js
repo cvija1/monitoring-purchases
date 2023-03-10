@@ -106,6 +106,45 @@ export const closePurchase = createAsyncThunk(
   }
 );
 
+export const updatePurchase = createAsyncThunk(
+  "purchases/update",
+  async (purchaseData, thunkAPI) => {
+    try {
+      const { purchaseId, formData } = purchaseData;
+      const token = thunkAPI.getState().auth.user.token;
+      return await PurchaseService.updatePurchase(purchaseId, formData, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const deletePurchase = createAsyncThunk(
+  "purchases/delete",
+  async (purchaseId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await PurchaseService.deletePurchase(purchaseId, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const purchaseSlice = createSlice({
   name: "purchase",
   initialState,
@@ -127,12 +166,27 @@ export const purchaseSlice = createSlice({
         state.isSuccess = false;
         state.message = action.payload;
       })
+      .addCase(updatePurchase.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updatePurchase.fulfilled, (state, action) => {
+        state.purchase = action.payload;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = "Успјешно сте измијенили набавку";
+      })
+      .addCase(updatePurchase.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload;
+      })
       .addCase(getPurchases.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(getPurchases.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.purchases = action.payload.purchases;
+        state.purchases = action.payload.purchases || [];
         state.additional = {
           count: action.payload.count,
           total: action.payload.total,
@@ -155,13 +209,19 @@ export const purchaseSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
-      .addCase(closePurchase.fulfilled, (state, action) => {
+      .addCase(deletePurchase.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deletePurchase.fulfilled, (state) => {
         state.isLoading = false;
-        state.purchases.map((purchase) =>
-          purchase._id === action.payload._id
-            ? (purchase.status = "closed")
-            : purchase
-        );
+        state.isSuccess = true;
+        state.message = "Успјешно сте избрисали набавку";
+      })
+      .addCase(deletePurchase.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.payload;
       });
   },
 });

@@ -49,7 +49,7 @@ const Login = () => {
       });
     }
     if (isSuccess || user) {
-      navigate("/tickets");
+      navigate("/purchases");
     }
 
     dispatch(reset());

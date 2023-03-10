@@ -48,3 +48,10 @@ textarea {
 .background{
   background-color: #e2e3e5;
 }
+
+
+@media only screen and (max-width: 600px) {
+  .btn-rsp{
+    width: 100%;
+  }
+}

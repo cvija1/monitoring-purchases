@@ -32,6 +32,17 @@ const Header = () => {
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           {user ? (
             <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+              <li class="nav-item ">
+                <Link class="nav-link" aria-current="page" to="/purchases">
+                  Преглед набавки
+                </Link>
+              </li>
+              <li class="nav-item me-4">
+                <Link class="nav-link" aria-current="page" to="/new-purchase">
+                  Унеси нову набавку
+                </Link>
+              </li>
+
               <li class="nav-item">
                 <Link
                   onClick={onLogout}

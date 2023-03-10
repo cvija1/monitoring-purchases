@@ -11,7 +11,7 @@ import Header from "./components/Header";
 import NewPurchase from "./pages/NewPurchase";
 import PrivateRoute from "./components/PrivateRoute";
 import Purchases from "./pages/Purchases";
-import Ticket from "./pages/Ticket";
+import EditPurchase from "./pages/EditPurchase";
 const App = () => {
   return (
     <>
@@ -29,7 +29,7 @@ const App = () => {
               <Route path="/purchases" element={<Purchases />} />
             </Route>
             <Route path="/purchase/:purchaseId" element={<PrivateRoute />}>
-              <Route path="/purchase/:purchaseId" element={<Ticket />} />
+              <Route path="/purchase/:purchaseId" element={<EditPurchase />} />
             </Route>
           </Routes>
         </Router>

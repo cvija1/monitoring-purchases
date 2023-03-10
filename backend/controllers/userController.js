@@ -8,13 +8,13 @@ const registerUser = asyncHandler(async (req, res) => {
   const { name, surname, username, password } = req.body;
   if (!name || !surname || !username || !password) {
     res.status(400);
-    throw new Error("Please include all fields");
+    throw new Error("Унесите сва поља");
   }
 
   const userExists = await User.findOne({ username });
   if (userExists) {
     res.status(400);
-    throw new Error("User already exists");
+    throw new Error("Корисник већ постоји са тим корисничким именом");
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -37,7 +37,7 @@ const registerUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("Invalid user data");
+    throw new Error("Кориснички подаци нису валидни!");
   }
 
   res.send("Register Route");
@@ -55,7 +55,7 @@ const loginUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(401);
-    throw new Error("Invalid credentials");
+    throw new Error("Нешто сте погријешили");
   }
   res.send("Login Route");
 });

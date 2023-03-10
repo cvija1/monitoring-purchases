@@ -47,12 +47,17 @@ const getPurchase = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Корисник није пронађен");
   }
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    res.status(401);
+    throw new Error("Набавка није пронађена");
+  }
+
   const purchase = await Purchase.findById(req.params.id);
   if (!purchase) {
     res.status(404);
     throw new Error("Набавка није пронађена");
   }
-  if (!req.user.isAdmin || purchase.user.toString() !== req.user.id) {
+  if (!user.isAdmin && purchase.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("Нисте ауторизовани");
   }
@@ -61,6 +66,7 @@ const getPurchase = asyncHandler(async (req, res) => {
 
 const createPurchase = asyncHandler(async (req, res) => {
   const { date, title, status, description, value } = req.body;
+
   if (!title || !description || !status || !value || !date) {
     res.status(400);
     throw new Error("Молим Вас унесите назив набавке и опис исте");
@@ -86,6 +92,10 @@ const deletePurchase = asyncHandler(async (req, res) => {
   if (!user) {
     res.status(401);
     throw new Error("Корисник није пронађен");
+  }
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    res.status(401);
+    throw new Error("Набавка није пронађена");
   }
   const purchase = await Purchase.findById(req.params.id);
   if (!purchase) {
@@ -120,9 +130,11 @@ const updatePurchase = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Нисте ауторизовани");
   }
+
   const updatedPurchase = await Purchase.findByIdAndUpdate(
     req.params.id,
     req.body,
+
     { new: true }
   );
   res.status(200).json(updatedPurchase);

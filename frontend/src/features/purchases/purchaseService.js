@@ -21,6 +21,24 @@ const createPurchase = async (purchaseData, token) => {
   return response.data;
 };
 
+const updatePurchase = async (purchaseId, formData, token) => {
+  const amount = formData.value;
+  const title =
+    formData.title.charAt(0).toUpperCase() + formData.title.slice(1);
+  formData.value = parseInt(amount.replace(/,/g, ""), 10);
+  formData.title = title;
+  formData.date = moment(formData.date).format("YYYY-MM-DD");
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(API_URL + purchaseId, formData, config);
+  return response.data;
+};
+
 const getPurchases = async (params, token) => {
   const { sort, pageSize, page, order } = params;
   const config = {
@@ -56,18 +74,14 @@ const getPurchase = async (purchaseId, token) => {
   return response.data;
 };
 
-const closePurchase = async (purchaseId, token) => {
+const deletePurchase = async (purchaseId, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 
-  const response = await axios.put(
-    API_URL + purchaseId,
-    { status: "завршена" },
-    config
-  );
+  const response = await axios.delete(API_URL + purchaseId, config);
   return response.data;
 };
 
@@ -75,8 +89,9 @@ const PurchaseService = {
   createPurchase,
   getPurchases,
   getPurchase,
-  closePurchase,
+  deletePurchase,
   getAllPurchases,
+  updatePurchase,
 };
 
 export default PurchaseService;
