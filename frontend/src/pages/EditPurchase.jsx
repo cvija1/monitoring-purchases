@@ -19,6 +19,7 @@ const EditPurchase = () => {
   const { purchase, isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.purchases
   );
+  const { user } = useSelector((state) => state.auth);
 
   const initialFormData = {
     title: "",
@@ -123,7 +124,11 @@ const EditPurchase = () => {
         <div className="bg-opacity-50 bg-success text-light col-11 col-sm-8 col-lg-5 hero-purchase rounded text-center border border-2 border-dark">
           <div>
             <div className="h3 mb-4 mt-2 pb-2 border-bottom border-white">
-              <i class="bi bi-pen"> Измијени набавку</i>
+              {user?.isAdmin ? (
+                <i class="bi bi-book"> Преглед набавке</i>
+              ) : (
+                <i class="bi bi-pen"> Измијени набавку</i>
+              )}
             </div>
             <PurchaseForm
               onChange={onChange}

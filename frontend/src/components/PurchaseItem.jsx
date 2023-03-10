@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import moment from "moment";
 
 import "moment/locale/sr-cyrl"; // without this line it didn't work
@@ -9,6 +10,7 @@ const PurchaseItem = ({ purchase }) => {
   const [badge, setBadge] = useState("");
   const navigate = useNavigate();
   const value = new Intl.NumberFormat().format(purchase.value);
+  const { user } = useSelector((state) => state.auth);
   const goRouteId = (id) => {
     navigate(`/purchase/${id}`);
   };

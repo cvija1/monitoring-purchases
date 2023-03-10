@@ -3,6 +3,7 @@ import { NumericFormat } from "react-number-format";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const PurchaseForm = ({
   onChange,
@@ -12,6 +13,7 @@ const PurchaseForm = ({
   onDelete,
 }) => {
   const { purchase } = useSelector((state) => state.purchases);
+  const { user } = useSelector((state) => state.auth);
   const { date, title, status, description, value } = formData;
   const [purchaseState, setPurchaseState] = useState(false);
 
@@ -23,7 +25,7 @@ const PurchaseForm = ({
   return (
     <form onSubmit={onSubmit}>
       <div class="d-flex pt-lg-3 pt-1 row g-md-4 align-items-center container-fluid">
-        {purchaseState ? (
+        {purchaseState && !user?.isAdmin ? (
           <div className="m-0 text-end">
             <button
               data-bs-toggle="modal"
@@ -84,6 +86,7 @@ const PurchaseForm = ({
         </label>
         <div className={purchaseState ? "col-md-10 mt-1" : "col-md-10"}>
           <input
+            disabled={user?.isAdmin}
             type="text"
             className="form-control"
             id="title"
@@ -100,6 +103,7 @@ const PurchaseForm = ({
         </label>
         <div className="col-md-10">
           <textarea
+            disabled={user?.isAdmin}
             rows="4"
             type="text"
             className="form-control"
@@ -116,6 +120,7 @@ const PurchaseForm = ({
         </label>
         <div className="col-md-10">
           <select
+            disabled={user?.isAdmin}
             id="status"
             name="status"
             class="form-select"
@@ -133,6 +138,7 @@ const PurchaseForm = ({
         </label>
         <div className="col-md-10">
           <DatePicker
+            disabled={user?.isAdmin}
             className="form-control"
             dateFormat="dd/MM/yyyy"
             selected={date}
@@ -157,6 +163,7 @@ const PurchaseForm = ({
             name="value"
             value={value}
             onChange={onChange}
+            disabled={user?.isAdmin}
             thousandSeparator=","
             placeholder="Упиши вриједност набавке"
             required
@@ -165,13 +172,25 @@ const PurchaseForm = ({
         </div>
         <div className=" mt-3">
           {purchaseState ? (
-            <button type="submit" className="btn btn-secondary btn-rsp">
+            <button
+              type="submit"
+              className={
+                user?.isAdmin ? "d-none " : "btn btn-secondary btn-rsp"
+              }
+            >
               Измијени
             </button>
           ) : (
             <button type="submit" className="btn btn-secondary btn-rsp">
               Унеси
             </button>
+          )}
+          {user?.isAdmin ? (
+            <Link className="btn btn-secondary btn-rsp" to="/purchases">
+              Врати се назад
+            </Link>
+          ) : (
+            <></>
           )}
         </div>
       </div>

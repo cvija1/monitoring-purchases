@@ -51,10 +51,10 @@ export const getPurchases = createAsyncThunk(
 
 export const getAllPurchases = createAsyncThunk(
   "purchases/getAllPurchases",
-  async (_, thunkAPI) => {
+  async (params, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await PurchaseService.getPurchases(token);
+      return await PurchaseService.getAllPurchases(params, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -193,6 +193,22 @@ export const purchaseSlice = createSlice({
         };
       })
       .addCase(getPurchases.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(getAllPurchases.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllPurchases.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.purchases = action.payload.purchases || [];
+        state.additional = {
+          count: action.payload.count,
+          total: action.payload.total,
+        };
+      })
+      .addCase(getAllPurchases.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

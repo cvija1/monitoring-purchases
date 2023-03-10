@@ -25,6 +25,7 @@ const registerUser = asyncHandler(async (req, res) => {
     surname,
     username,
     password: hashedPassword,
+    isAdmin: false,
   });
 
   if (user) {
@@ -34,13 +35,12 @@ const registerUser = asyncHandler(async (req, res) => {
       surname: user.surname,
       username: user.username,
       token: generateToken(user._id),
+      isAdmin: user.isAdmin,
     });
   } else {
     res.status(400);
     throw new Error("Кориснички подаци нису валидни!");
   }
-
-  res.send("Register Route");
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -52,12 +52,12 @@ const loginUser = asyncHandler(async (req, res) => {
       name: user.name,
       username: user.username,
       token: generateToken(user._id),
+      isAdmin: user.isAdmin,
     });
   } else {
     res.status(401);
     throw new Error("Нешто сте погријешили");
   }
-  res.send("Login Route");
 });
 
 const getMe = asyncHandler(async (req, res) => {

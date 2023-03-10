@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getPurchases, reset } from "../features/purchases/purchaseSlice";
+import {
+  getPurchases,
+  reset,
+  getAllPurchases,
+} from "../features/purchases/purchaseSlice";
 import Spinner from "../components/Spinner";
 import { Link } from "react-router-dom";
 import Table from "../components/Table";
@@ -10,6 +14,7 @@ const Purchases = () => {
   const { purchases, isLoading, isSuccess, additional } = useSelector(
     (state) => state.purchases
   );
+  const { user } = useSelector((state) => state.auth);
   const total = new Intl.NumberFormat().format(additional.total);
 
   const [params, setParams] = useState({
@@ -49,8 +54,12 @@ const Purchases = () => {
   }, [dispatch, isSuccess]);
 
   useEffect(() => {
-    dispatch(getPurchases(params));
-  }, [dispatch, params]);
+    if (user?.isAdmin) {
+      dispatch(getAllPurchases(params));
+    } else {
+      dispatch(getPurchases(params));
+    }
+  }, [params]);
 
   if (isLoading) {
     return <Spinner />;

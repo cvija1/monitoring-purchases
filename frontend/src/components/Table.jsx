@@ -1,6 +1,7 @@
 import React from "react";
 import PurchaseItem from "../components/PurchaseItem";
 import ReactPaginate from "react-paginate";
+import { useSelector } from "react-redux";
 
 const Table = ({
   total,
@@ -10,11 +11,16 @@ const Table = ({
   handlePageChange,
   params,
 }) => {
+  const { user } = useSelector((state) => state.auth);
   return (
     <div class="flex-grow-1 bg-primary ">
       <div class="container  text-light mt-5">
         <div className="container d-flex align-items-center p-0">
-          <div className="h5 mb-4 ">Списак набавки које ви водите:</div>
+          <div className="h5 mb-4 ">
+            {user?.isAdmin
+              ? "Списак свих набавки:"
+              : "Списак набавки које ви водите:"}
+          </div>
           <div
             class="btn-group ms-auto mb-4 flex-wrap "
             role="group"
@@ -74,7 +80,11 @@ const Table = ({
               <tr className="table-secondary">
                 <td scope="row"></td>
                 <td></td>
-                <td className="text-end">Укупна вриједност набавки:</td>
+                <td className="text-end">
+                  {user?.isAdmin
+                    ? "Укупна вриједност набавки:"
+                    : "Укупна вриједност ваших набавки:"}
+                </td>
                 <td>{`${total} RSD`}</td>
               </tr>
             </tfoot>

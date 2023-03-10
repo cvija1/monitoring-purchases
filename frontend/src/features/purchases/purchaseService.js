@@ -52,11 +52,13 @@ const getPurchases = async (params, token) => {
   return response.data;
 };
 
-const getAllPurchases = async (token) => {
+const getAllPurchases = async (params, token) => {
+  const { sort, pageSize, page, order } = params;
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    params: { sort, pageSize, page, order },
   };
 
   const response = await axios.get(admin_url, config);

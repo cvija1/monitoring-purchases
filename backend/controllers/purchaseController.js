@@ -37,8 +37,23 @@ const getAllPurchases = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Корисник није пронађен");
   }
-  const purchases = await Purchase.find();
-  res.status(200).json(purchases);
+  const { sort, pageSize, page, order } = req.query;
+
+  const count = await Purchase.countDocuments();
+  const total = await Purchase.aggregate([
+    { $group: { _id: null, total: { $sum: "$value" } } },
+  ]);
+  const prices = total[0].total;
+  const purchases = await Purchase.find()
+    .sort({ [sort]: order })
+    .skip((page - 1) * pageSize)
+    .limit(pageSize);
+
+  res.status(200).json({
+    purchases,
+    count,
+    total: prices,
+  });
 });
 
 const getPurchase = asyncHandler(async (req, res) => {
