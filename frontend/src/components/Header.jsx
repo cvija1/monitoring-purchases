@@ -37,11 +37,19 @@ const Header = () => {
                   Преглед набавки
                 </Link>
               </li>
-              <li class="nav-item me-4">
-                <Link class="nav-link" aria-current="page" to="/new-purchase">
-                  Унеси нову набавку
-                </Link>
-              </li>
+              {user?.isAdmin ? (
+                <li class="nav-item me-4">
+                  <Link class="nav-link" aria-current="page" to="/reports">
+                    Извјештаји
+                  </Link>
+                </li>
+              ) : (
+                <li class="nav-item me-4">
+                  <Link class="nav-link" aria-current="page" to="/new-purchase">
+                    Унеси нову набавку
+                  </Link>
+                </li>
+              )}
 
               <li class="nav-item">
                 <Link

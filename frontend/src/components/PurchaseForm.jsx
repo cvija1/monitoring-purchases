@@ -20,6 +20,8 @@ const PurchaseForm = ({
   useEffect(() => {
     if (Object.keys(purchase).length !== 0) {
       setPurchaseState(true);
+    } else {
+      setPurchaseState(false);
     }
   }, [purchaseState, purchase]);
   return (
@@ -186,7 +188,7 @@ const PurchaseForm = ({
             </button>
           )}
           {user?.isAdmin ? (
-            <Link className="btn btn-secondary btn-rsp" to="/purchases">
+            <Link className="btn btn-secondary btn-rsp" to={-1}>
               Врати се назад
             </Link>
           ) : (

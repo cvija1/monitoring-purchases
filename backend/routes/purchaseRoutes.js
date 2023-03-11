@@ -8,9 +8,11 @@ const {
   deletePurchase,
   updatePurchase,
   getAllPurchases,
+  getDates,
 } = require("../controllers/purchaseController");
 router.route("/").get(protect, getPurchases).post(protect, createPurchase);
 router.route("/admin").get(adminProtect, getAllPurchases);
+router.route("/admin/dates").get(adminProtect, getDates);
 router
   .route("/:id")
   .get(protect, getPurchase)

@@ -10,8 +10,10 @@ import Register from "./pages/Register";
 import Header from "./components/Header";
 import NewPurchase from "./pages/NewPurchase";
 import PrivateRoute from "./components/PrivateRoute";
+import AdminRoute from "./components/AdminRoute";
 import Purchases from "./pages/Purchases";
 import EditPurchase from "./pages/EditPurchase";
+import Reports from "./pages/Reports";
 const App = () => {
   return (
     <>
@@ -30,6 +32,9 @@ const App = () => {
             </Route>
             <Route path="/purchase/:purchaseId" element={<PrivateRoute />}>
               <Route path="/purchase/:purchaseId" element={<EditPurchase />} />
+            </Route>
+            <Route path="/reports" element={<AdminRoute />}>
+              <Route path="/reports" element={<Reports />} />
             </Route>
           </Routes>
         </Router>

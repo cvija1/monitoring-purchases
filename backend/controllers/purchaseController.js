@@ -155,6 +155,34 @@ const updatePurchase = asyncHandler(async (req, res) => {
   res.status(200).json(updatedPurchase);
 });
 
+const getDates = asyncHandler(async (req, res) => {
+  function removeDuplicates(arr) {
+    return arr.filter((item, index) => arr.indexOf(item) === index);
+  }
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    res.status(401);
+    throw new Error("Корисник није пронађен");
+  }
+
+  const purchases = await Purchase.find(
+    {},
+    {
+      date: 1,
+    }
+  );
+  let dates = purchases.map((item) => {
+    return item.date;
+  });
+  dates = dates.map((date) => {
+    const ymh = date.split("-");
+    return parseInt(ymh[0]);
+  });
+  dates = removeDuplicates(dates);
+
+  res.status(200).json(dates);
+});
+
 module.exports = {
   getPurchase,
   getPurchases,
@@ -163,4 +191,5 @@ module.exports = {
   deletePurchase,
   updatePurchase,
   getAllPurchases,
+  getDates,
 };
