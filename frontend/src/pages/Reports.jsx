@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { reset, giveReport } from "../features/purchases/purchaseSlice";
+import { toast } from "react-toastify";
 import axios from "axios";
+import Spinner from "../components/Spinner";
 
 const Reports = () => {
   const initialState = {
@@ -7,6 +11,10 @@ const Reports = () => {
     sort: "",
     date: "",
   };
+  const { isLoading, isSuccess, isError, message } = useSelector(
+    (state) => state.purchases
+  );
+  const dispatch = useDispatch();
   const [params, setParams] = useState(initialState);
   const [dates, setDates] = useState([]);
 
@@ -27,6 +35,9 @@ const Reports = () => {
 
     setDates(response.data);
   };
+  const giveMeReport = (e) => {
+    dispatch(giveReport(params));
+  };
 
   const onChange = (e) => {
     setParams((prev) => ({
@@ -38,6 +49,42 @@ const Reports = () => {
   useEffect(() => {
     getDates();
   }, []);
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+
+    if (isSuccess) {
+      toast.success(message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
+      setParams(initialState);
+    }
+
+    dispatch(reset());
+    // eslint-disable-next-line
+  }, [isSuccess, isError]);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <div class="flex-grow-1 bg-primary d-flex justify-content-center align-items-center row m-0">
       <div className="bg-opacity-50 bg-success text-light col-11 col-sm-8 col-lg-5 hero-purchase rounded text-center border border-2 border-dark">
@@ -63,9 +110,9 @@ const Reports = () => {
                   изабери..
                 </option>
                 <option value="all">све</option>
-                <option value="in progress">у току</option>
-                <option value="completed">завршене</option>
-                <option value="failed">неуспјеле</option>
+                <option value="у току">у току</option>
+                <option value="завршена">завршене</option>
+                <option value="неуспјела">неуспјеле</option>
               </select>
             </div>
 
@@ -98,7 +145,7 @@ const Reports = () => {
               </select>
             </div>
 
-            {type !== "" ? (
+            {type !== "" && sort !== "" ? (
               <div className="col-md-12 mt-4 p-0">
                 <p className="m-1 text-start">
                   Изаберите годину за коју желите извјештај:
@@ -133,7 +180,11 @@ const Reports = () => {
             {date !== "" ? (
               <div className="col-md-12 mt-4 p-0">
                 <p className="m-1 text-center">Преузми свој извјештај</p>
-                <button type="button" class="btn mt-3 green">
+                <button
+                  onClick={giveMeReport}
+                  type="button"
+                  class="btn mt-3 green"
+                >
                   Преузми
                 </button>
               </div>

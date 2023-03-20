@@ -87,7 +87,31 @@ const deletePurchase = async (purchaseId, token) => {
   return response.data;
 };
 
+const giveReport = async (params, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params,
+    responseType: "blob",
+  };
+
+  const response = await axios.get(admin_url + "/report", config);
+  const href = URL.createObjectURL(response.data);
+  // create "a" HTML element with href to file & click
+  const link = document.createElement("a");
+  link.href = href;
+  link.setAttribute("download", "извјештај.xlsx"); //or any other extension
+  document.body.appendChild(link);
+  link.click();
+
+  // clean up "a" element & remove ObjectURL
+  document.body.removeChild(link);
+  URL.revokeObjectURL(href);
+};
+
 const PurchaseService = {
+  giveReport,
   createPurchase,
   getPurchases,
   getPurchase,

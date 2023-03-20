@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { protect, adminProtect } = require("../middleware/authMiddleware");
 const {
+  giveReport,
   getPurchases,
   createPurchase,
   getPurchase,
@@ -12,6 +13,7 @@ const {
 } = require("../controllers/purchaseController");
 router.route("/").get(protect, getPurchases).post(protect, createPurchase);
 router.route("/admin").get(adminProtect, getAllPurchases);
+router.route("/admin/report").get(adminProtect, giveReport);
 router.route("/admin/dates").get(adminProtect, getDates);
 router
   .route("/:id")

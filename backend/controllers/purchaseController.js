@@ -2,6 +2,8 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const Purchase = require("../models/purchaseModel");
 const mongoose = require("mongoose");
+const excelJS = require("exceljs");
+var path = require("path");
 
 const getPurchases = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
@@ -54,6 +56,204 @@ const getAllPurchases = asyncHandler(async (req, res) => {
     count,
     total: prices,
   });
+});
+
+const giveReport = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    res.status(401);
+    throw new Error("Корисник није пронађен");
+  }
+  const { type, sort, date } = req.query;
+
+  const sortArray = sort.split(",");
+  const sortText = sortArray[0];
+  const sortOrder = sortArray[1];
+  let purchases, total;
+
+  if (date !== "all" || type !== "all") {
+    total = await Purchase.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              date: {
+                $gt: new Date(`${date}-01-01`).toISOString(),
+                $lte: new Date(`${date}-12-31`).toISOString(),
+              },
+            },
+            { status: `${type}` },
+          ],
+        },
+      },
+      { $group: { _id: null, total: { $sum: "$value" } } },
+    ]);
+
+    purchases = await Purchase.find(
+      {
+        $and: [
+          {
+            date: {
+              $gt: new Date(`${date}-01-01`).toISOString(),
+              $lte: new Date(`${date}-12-31`).toISOString(),
+            },
+          },
+          { status: `${type}` },
+        ],
+      },
+      {
+        title: 1,
+        status: 1,
+        value: 1,
+        _id: 0,
+        date: 1,
+      }
+    ).sort({ [sortText]: sortOrder });
+  }
+
+  if (date === "all" && type !== "all") {
+    total = await Purchase.aggregate([
+      {
+        $match: {
+          status: `${type}`,
+        },
+      },
+      { $group: { _id: null, total: { $sum: "$value" } } },
+    ]);
+
+    purchases = await Purchase.find(
+      {
+        status: `${type}`,
+      },
+      {
+        title: 1,
+        status: 1,
+        value: 1,
+        _id: 0,
+        date: 1,
+      }
+    ).sort({ [sortText]: sortOrder });
+  }
+
+  if (type === "all" && date !== "all") {
+    total = await Purchase.aggregate([
+      {
+        $match: {
+          date: {
+            $gt: new Date(`${date}-01-01`).toISOString(),
+            $lte: new Date(`${date}-12-31`).toISOString(),
+          },
+        },
+      },
+      { $group: { _id: null, total: { $sum: "$value" } } },
+    ]);
+
+    purchases = await Purchase.find(
+      {
+        date: {
+          $gt: new Date(`${date}-01-01`).toISOString(),
+          $lte: new Date(`${date}-12-31`).toISOString(),
+        },
+      },
+
+      {
+        title: 1,
+        status: 1,
+        value: 1,
+        _id: 0,
+        date: 1,
+      }
+    ).sort({ [sortText]: sortOrder });
+  }
+
+  if (type === "all" && date === "all") {
+    total = await Purchase.aggregate([
+      { $group: { _id: null, total: { $sum: "$value" } } },
+    ]);
+
+    purchases = await Purchase.find(
+      {},
+
+      {
+        title: 1,
+        status: 1,
+        value: 1,
+        _id: 0,
+        date: 1,
+      }
+    ).sort({ [sortText]: sortOrder });
+  }
+
+  const formatPurchases = purchases.map((purchase, index) => {
+    let formatPurchase = purchase._doc;
+    let dateArray = purchase.date.split("-");
+    return {
+      rbr: index + 1,
+      ...formatPurchase,
+      date: dateArray[2] + "." + dateArray[1] + "." + dateArray[0],
+    };
+  });
+
+  const workbook = new excelJS.Workbook();
+  const worksheet = workbook.addWorksheet("извјештај");
+  worksheet.getCell(`A1`).value = `Извјештај ${
+    date === "all" ? `свих набавки` : `за ${date} годину`
+  } `;
+  worksheet.mergeCells("A1:E1"); // Extend cell over all column headers
+  worksheet.getCell(`A1`).alignment = { horizontal: "center" }; // Horizontally center your text
+
+  worksheet.getRow(3).values = [
+    "Редни број",
+    "Наслов",
+    "Статус",
+    "Датум",
+    "Вриједност",
+  ];
+
+  // Path to download excel
+  // Column for data in excel. key must match data key
+  worksheet.columns = [
+    { key: "rbr", width: 14 },
+    { key: "title", width: 30 },
+    { key: "status", width: 15 },
+    { key: "date", width: 30 },
+    { key: "value", width: 15 },
+  ];
+
+  // Looping through purchase data
+  formatPurchases.forEach((purchase) => {
+    worksheet.addRow(purchase); // Add data in worksheet
+  });
+  worksheet.addRow();
+  worksheet.addRow().values = [
+    "",
+    "",
+    "",
+    "Укупна вриједност набавки:",
+    total[0].total,
+  ];
+  // Making first line in excel bold
+  worksheet.getRow(3).eachCell((cell) => {
+    cell.font = { bold: true };
+  });
+  try {
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=" + "Report.xlsx"
+    );
+    workbook.xlsx.write(res).then(function (data) {
+      res.end();
+    });
+  } catch (err) {
+    res.send({
+      status: err,
+      message: "Something went wrong",
+    });
+  }
 });
 
 const getPurchase = asyncHandler(async (req, res) => {
@@ -157,7 +357,7 @@ const updatePurchase = asyncHandler(async (req, res) => {
 
 const getDates = asyncHandler(async (req, res) => {
   function removeDuplicates(arr) {
-    return arr.filter((item, index) => arr.indexOf(item) === index);
+    return arr?.filter((item, index) => arr?.indexOf(item) === index);
   }
   const user = await User.findById(req.user.id);
   if (!user) {
@@ -171,19 +371,20 @@ const getDates = asyncHandler(async (req, res) => {
       date: 1,
     }
   );
-  let dates = purchases.map((item) => {
+  let dates = purchases?.map((item) => {
     return item.date;
   });
-  dates = dates.map((date) => {
+  dates = dates?.map((date) => {
     const ymh = date.split("-");
     return parseInt(ymh[0]);
   });
   dates = removeDuplicates(dates);
 
-  res.status(200).json(dates);
+  res.status(200).json(dates || []);
 });
 
 module.exports = {
+  giveReport,
   getPurchase,
   getPurchases,
   createPurchase,

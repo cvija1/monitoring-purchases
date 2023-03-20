@@ -145,6 +145,25 @@ export const deletePurchase = createAsyncThunk(
   }
 );
 
+export const giveReport = createAsyncThunk(
+  "purchases/report",
+  async (params, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await PurchaseService.giveReport(params, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const purchaseSlice = createSlice({
   name: "purchase",
   initialState,
@@ -238,6 +257,20 @@ export const purchaseSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = action.payload;
+      })
+      .addCase(giveReport.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(giveReport.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = "Успјешно сачувано";
+      })
+      .addCase(giveReport.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Дошло је до грешке";
       });
   },
 });
