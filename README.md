@@ -1,5 +1,8 @@
-# support-desk
-This is my first MERN app. In this project I used Redux Toolkit and many other advanced libraries. It is deployed at https://supportdesknew.herokuapp.com/
+# monitoring-purchases
+
+This is project for my final exam. In this project I used Redux Toolkit and many other advanced libraries. For backend I used Express and MongoDB for database.
+It has all required config for deploying
+on Heroku. For using this app, it have two roles, admin and users. Users can create new purchases, edit and review purchases that they made. Admin can review purchases from all users and can save report in excel file which relate to purchases of users.
 
 If you want to run this app on your local machine you need to add .env file in root of your app with the following things:
 NODE_ENV=development
