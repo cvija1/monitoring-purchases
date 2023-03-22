@@ -13,6 +13,7 @@ const Register = () => {
     username: "",
     password: "",
     password2: "",
+    email: "",
   });
 
   const onChange = (e) => {
@@ -36,6 +37,7 @@ const Register = () => {
       });
     } else {
       const userData = {
+        email,
         name,
         surname,
         username,
@@ -45,7 +47,7 @@ const Register = () => {
     }
   };
 
-  const { name, surname, username, password, password2 } = formData;
+  const { name, surname, username, password, password2, email } = formData;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, isLoading, isSuccess, message, isError } = useSelector(
@@ -65,7 +67,17 @@ const Register = () => {
         theme: "dark",
       });
     }
-    if (isSuccess || user) {
+    if (isSuccess) {
+      toast.success(message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
       navigate("/");
     }
 
@@ -136,6 +148,25 @@ const Register = () => {
                     value={username}
                     onChange={onChange}
                     placeholder="Унеси корисничко име"
+                    required
+                  />
+                </div>
+
+                <label
+                  for="email"
+                  className="col-md-2 col-form-label text-start"
+                >
+                  Имејл:
+                </label>
+                <div className="col-md-10">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={onChange}
+                    placeholder="Унеси имејл"
                     required
                   />
                 </div>

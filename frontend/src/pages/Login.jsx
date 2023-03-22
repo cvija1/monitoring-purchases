@@ -48,7 +48,7 @@ const Login = () => {
         theme: "dark",
       });
     }
-    if (isSuccess || user) {
+    if (user) {
       navigate("/purchases");
     }
 

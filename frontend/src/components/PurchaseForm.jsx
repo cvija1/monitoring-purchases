@@ -26,7 +26,7 @@ const PurchaseForm = ({
   }, [purchaseState, purchase]);
   return (
     <form onSubmit={onSubmit}>
-      <div class="d-flex pt-lg-3 pt-1 row g-md-4 align-items-center container-fluid">
+      <div class="d-flex pt-lg-1 pt-1 row g-md-3 align-items-center container-fluid">
         {purchaseState && !user?.isAdmin ? (
           <div className="m-0 text-end">
             <button

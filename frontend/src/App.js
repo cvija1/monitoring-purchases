@@ -15,6 +15,7 @@ import Purchases from "./pages/Purchases";
 import EditPurchase from "./pages/EditPurchase";
 import Reports from "./pages/Reports";
 import PageNotFound from "./pages/PageNotFound";
+import Welcome from "./pages/Welcome";
 const App = () => {
   return (
     <>
@@ -37,6 +38,7 @@ const App = () => {
             <Route path="/reports" element={<AdminRoute />}>
               <Route path="/reports" element={<Reports />} />
             </Route>
+            <Route path="/confirm/:confirmationCode" element={<Welcome />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Router>

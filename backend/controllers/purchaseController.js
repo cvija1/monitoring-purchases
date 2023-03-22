@@ -20,7 +20,7 @@ const getPurchases = asyncHandler(async (req, res) => {
     { $match: { user: mongoose.Types.ObjectId(req.user.id) } },
     { $group: { _id: null, total: { $sum: "$value" } } },
   ]);
-  const prices = total[0].total;
+  const prices = total[0]?.total;
   const purchases = await Purchase.find({ user: req.user.id })
     .sort({ [sort]: order })
     .skip((page - 1) * pageSize)

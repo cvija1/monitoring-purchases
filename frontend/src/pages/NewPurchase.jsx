@@ -81,7 +81,7 @@ const NewPurchase = () => {
       <div class="flex-grow-1 bg-primary d-flex justify-content-center align-items-center row m-0">
         <div className="bg-opacity-50 bg-success text-light col-11 col-sm-8 col-lg-5 hero-purchase rounded text-center border border-2 border-dark">
           <div>
-            <div className="h3 mb-4 mt-2 pb-2 border-bottom border-white">
+            <div className="h3 mb-3 mt-2 pb-2 border-bottom border-white">
               <i class="bi bi-wallet2"> Унос нове набавке</i>
             </div>
             <PurchaseForm

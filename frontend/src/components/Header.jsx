@@ -15,7 +15,7 @@ const Header = () => {
   return (
     <nav class="navbar navbar-expand-lg fixed navbar-dark bg-dark">
       <div class="container">
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand" to={user ? "purchases" : "/"}>
           Апликација за праћење набавки
         </Link>{" "}
         <button
