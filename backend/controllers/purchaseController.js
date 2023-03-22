@@ -3,7 +3,6 @@ const User = require("../models/userModel");
 const Purchase = require("../models/purchaseModel");
 const mongoose = require("mongoose");
 const excelJS = require("exceljs");
-var path = require("path");
 
 const getPurchases = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
@@ -40,9 +39,18 @@ const getAllPurchases = asyncHandler(async (req, res) => {
     throw new Error("Корисник није пронађен");
   }
   const { sort, pageSize, page, order } = req.query;
-
+  const today = new Date();
+  const year = today.getFullYear();
   const count = await Purchase.countDocuments();
   const total = await Purchase.aggregate([
+    {
+      $match: {
+        date: {
+          $gt: new Date(`${year}-01-01`).toISOString(),
+          $lte: new Date(`${year}-12-31`).toISOString(),
+        },
+      },
+    },
     { $group: { _id: null, total: { $sum: "$value" } } },
   ]);
   const prices = total[0].total;
@@ -356,6 +364,8 @@ const updatePurchase = asyncHandler(async (req, res) => {
 });
 
 const getDates = asyncHandler(async (req, res) => {
+  const { type } = req.query;
+  let purchases;
   function removeDuplicates(arr) {
     return arr?.filter((item, index) => arr?.indexOf(item) === index);
   }
@@ -364,13 +374,22 @@ const getDates = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Корисник није пронађен");
   }
+  if (type === "all") {
+    purchases = await Purchase.find(
+      {},
+      {
+        date: 1,
+      }
+    );
+  } else {
+    purchases = await Purchase.find(
+      { status: `${type}` },
+      {
+        date: 1,
+      }
+    );
+  }
 
-  const purchases = await Purchase.find(
-    {},
-    {
-      date: 1,
-    }
-  );
   let dates = purchases?.map((item) => {
     return item.date;
   });

@@ -29,6 +29,7 @@ const Reports = () => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      params: { type },
     };
 
     const response = await axios.get(admin_url, config);
@@ -48,7 +49,7 @@ const Reports = () => {
 
   useEffect(() => {
     getDates();
-  }, []);
+  }, [type]);
 
   useEffect(() => {
     if (isError) {
