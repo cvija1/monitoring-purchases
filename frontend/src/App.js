@@ -16,6 +16,9 @@ import EditPurchase from "./pages/EditPurchase";
 import Reports from "./pages/Reports";
 import PageNotFound from "./pages/PageNotFound";
 import Welcome from "./pages/Welcome";
+
+//some check
+
 const App = () => {
   return (
     <>
